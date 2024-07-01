@@ -4,7 +4,7 @@
   "description": "A mini social network application using Node.js, Express, Mysql, Passport, and Socket.IO",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "dev": "nodemon app.js"
   },
   "dependencies": {
@@ -24,6 +24,7 @@
     "socket.io": "^4.5.0"
   },
   "devDependencies": {
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.20"
   },
   "author": "Rotsiniaina Ramanantsoa",
