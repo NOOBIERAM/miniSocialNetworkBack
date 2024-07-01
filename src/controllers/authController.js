@@ -7,13 +7,13 @@ module.exports = {
         const { name, firstname, email, password } = req.body
         const photo = req.file ? req.file.path : null;
         
-        console.log(password, photo, name, firstname, email);
+        console.log("\n\n",password, photo, name, firstname, email,"\n\n");
         try {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt)
             const [user, create] = await User.findOrCreate({
                 where: { email },
-                defaults: { name, firstname, email, password: hashedPassword }
+                defaults: { name, firstname, email, password: hashedPassword, photo }
             })
             const token = jwtUtils.userTokenGenerator(user)
             create ? res.status(200).json({ message: 'Succes', Authorization: `Bearer ${token}` }) : res.status(409).json({ message: 'User already exist' }) 
