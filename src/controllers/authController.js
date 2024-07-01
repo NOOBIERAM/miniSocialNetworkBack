@@ -1,13 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwtUtils = require('../utils/jwt.utils');
-const User = require('../models').User;
+const {User} = require('../models');
 
 module.exports = {
     register: async (req, res) => {
         const { name, firstname, email, password } = req.body
         const photo = req.file ? req.file.path : null;
         
-        console.log("\n\n",password, photo, name, firstname, email,"\n\n");
         try {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt)
@@ -22,26 +21,38 @@ module.exports = {
         }
     },
     login: async (req, res) => {
-
         try {
             const { email, password } = req.body;
             const user = await User.findOne({ where: { email } });
             if (!user) {
                 return res.status(401).json({ message: "Utilisataeur n'existe pas" });
             }
-            bcrypt.compare(password, user.password, (err, resBycrypt) => {
-                if (err) return res.status(403).json(err)
-                if (resBycrypt) {
-                    return res.status(200).json({
-                        'message': 'connected',
-                        'Authorization': jwtUtils.userTokenGenerator(user)
-                    })
-                } else {
-                    return res.status(403).json({ 'message': "Mots de passe incorrecte" })
-                }
-            })
+
+            const deHashPasssword = bcrypt.compare(password,user.password)
+            if (deHashPasssword) 
+                return res.status(200).json({
+                    'message': 'Succes',
+                    'Authorization': jwtUtils.userTokenGenerator(user)
+                })
+            
+            else return res.status(403).json({ 'message': "Mots de passe incorrecte" })
+                
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     },
+    getAbout: async (req,res) => {
+        try {
+            const id = req.params.id
+            console.log(id);
+            const user = await User.findOne({
+                where : { id },
+                attributes : ['name','firstname','photo']
+            })
+            if(user) res.status(200).json({user})
+                else res.status(404).json({message : 'User not found'})
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
