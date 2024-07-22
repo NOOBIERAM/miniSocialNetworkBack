@@ -1,0 +1,26 @@
+                Event	                                        Purpose
+
+socket.to(socket.id).emit(“name”, “value”)	        Sends the value to specific user.
+
+io.emit(“name”, “value”)	                        Sends the value to all connected users.
+
+socket.emit(“name”, “value”)	                    Sends the value back to the user who called this event.
+
+socket.broadcast.emit(“name”, “value”)	            Sends the value to all users except the one who called this event.
+
+In “server.js” change the “new_message” event to save the incoming message in database before notifying to all other clients:
+
+// server should listen from each client via it's socket
+
+socket.on("new_message", function (data) {
+	console.log("Client says", data);
+
+	// save message in database
+	connection.query("INSERT INTO messages (message) VALUES ('" + data + "')", function (error, result) {
+		// server will send message to all connected clients
+		io.emit("new_message", {
+			id: result.insertId,
+			message: data
+		});
+	});
+});

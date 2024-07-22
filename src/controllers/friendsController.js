@@ -1,14 +1,16 @@
 const { Friend, User } = require('../models');
+const { Op } = require("sequelize");
 
 module.exports = {
     addFriend: async (req, res) => {
         try {
             const { userId, friendId } = req.body
-            const friendRequest = await Friend.create({
-                userId, friendId,
-                status: 'pending'
+            const [friendRequest, create] = await Friend.findOrCreate({
+                where: { userId, friendId },
+                defaults: { userId, friendId, status: 'pending' }
             })
-            res.status(201).json(friendRequest);
+
+            create ? res.status(201).json(friendRequest) : res.status(409).json({ message: 'User already added' })
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
@@ -67,7 +69,7 @@ module.exports = {
             const { userId } = req.params;
             const pendingRequests = await Friend.findAll({
                 where: {
-                    friendId: userId,
+                    userId,
                     status: 'pending'
                 },
                 include: [
@@ -75,6 +77,36 @@ module.exports = {
                 ]
             });
             res.status(200).json(pendingRequests);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    },
+    getSuggestFriends: async (req, res) => {
+        try {
+            const { userId } = req.params
+            const friendList = await User.findAll({
+                attributes: ['id', 'name', 'firstname', 'email', 'image'],
+                include: [{
+                    model: Friend,
+                    as: 'friends',
+                    // where: { userId:{[Op.ne]: userId}}
+                    // where: { userId:{[Op.ne]: userId}}
+                }]
+            })
+            const user = []
+            for (x in friendList) {
+                if (friendList[x].dataValues.friends.length == 0) user.push(friendList[x].dataValues)
+                else if (friendList[x].dataValues.friends[0].dataValues.userId != userId) {
+                    user.push(friendList[x].dataValues)
+                } 
+                // else {
+                //     console.log(friendList[x].dataValues.friends[0].dataValues.userId," == ",friendList[x].dataValues.friends[0].dataValues.status)
+                    
+                // }
+                
+            }
+            console.log(user);
+            res.status(200).json(user);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

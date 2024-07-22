@@ -1,9 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
+    "username": "avnadmin",
+    "password": "AVNS_Ci2H-LyuaJqeh2ZFa7T",
     "database": "miniSocialNetwork",
-    "host": "127.0.0.1",
+    "host": "mysql-9c44f5e-rotsiniainagg-304b.a.aivencloud.com",
+    "port": 23701,
     "dialect": "mysql"
   },
   "test": {

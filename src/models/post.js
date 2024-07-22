@@ -21,13 +21,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'postId',
         as: 'comments'
       });
+      
+      Post.hasMany(models.LikePost, {
+        foreignKey: 'postId',
+        as: 'likePost'
+      });
     }
   }
   Post.init({
     userId: DataTypes.INTEGER,
     content: DataTypes.TEXT,
     image: DataTypes.STRING,
-    like: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Post',

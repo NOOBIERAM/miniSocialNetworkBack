@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "refresh" : "sequelize db:drop && sequelize db:create && sequelize db:migrate && rm -rf src/uploads && mkdir src/uploads "
   },
   "dependencies": {
     "bcrypt": "^5.0.1",

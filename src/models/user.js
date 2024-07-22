@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'receiverId',
         as: 'receivedMessages'
       });
+      User.hasOne(models.LikePost, {
+        foreignKey: 'userId',
+        as: 'likePost'
+      });
     }
   }
   User.init({
@@ -39,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
     firstname: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    photo: DataTypes.STRING
+    image: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'User',

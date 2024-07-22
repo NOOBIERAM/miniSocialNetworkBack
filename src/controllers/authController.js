@@ -5,14 +5,14 @@ const {User} = require('../models');
 module.exports = {
     register: async (req, res) => {
         const { name, firstname, email, password } = req.body
-        const photo = req.file ? req.file.path : null;
+        const image = req.file ? req.file.path : null;
         
         try {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt)
             const [user, create] = await User.findOrCreate({
                 where: { email },
-                defaults: { name, firstname, email, password: hashedPassword, photo }
+                defaults: { name, firstname, email, password: hashedPassword, image }
             })
             const token = jwtUtils.userTokenGenerator(user)
             create ? res.status(200).json({ message: 'Succes', Authorization: `Bearer ${token}` }) : res.status(409).json({ message: 'User already exist' }) 
@@ -47,7 +47,7 @@ module.exports = {
             console.log(id);
             const user = await User.findOne({
                 where : { id },
-                attributes : ['name','firstname','photo']
+                attributes : ['name','firstname','image']
             })
             if(user) res.status(200).json({user})
                 else res.status(404).json({message : 'User not found'})
