@@ -5,8 +5,7 @@ const {User} = require('../models');
 module.exports = {
     register: async (req, res) => {
         const { name, firstname, email, password } = req.body
-        const image = req.file ? req.file.path : null;
-        
+        const image = req.file ? `uploads/${req.file.filename}` : null;
         try {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt)
@@ -23,12 +22,14 @@ module.exports = {
     login: async (req, res) => {
         try {
             const { email, password } = req.body;
+            console.log(password);
             const user = await User.findOne({ where: { email } });
             if (!user) {
                 return res.status(401).json({ message: "Utilisataeur n'existe pas" });
             }
 
-            const deHashPasssword = bcrypt.compare(password,user.password)
+            const deHashPasssword = await bcrypt.compare(password,user.password)
+            console.log("dehashed pass   "+deHashPasssword);
             if (deHashPasssword) 
                 return res.status(200).json({
                     'message': 'Succes',

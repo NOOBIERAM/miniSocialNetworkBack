@@ -54,9 +54,18 @@ module.exports = {
                     userId,
                     status: 'accepted'
                 },
+                attributes:['id','userId','friendId'],
                 include: [
-                    { model: User, as: 'Requester' },
-                    { model: User, as: 'Receiver' }
+                    // {
+                    //     model: User,
+                    //     as: 'Requester',
+                    //     attributes:['name','firstname','image']
+                    // }, perso 
+                    {
+                        model: User, as: 'Receiver',
+                        attributes: ['name', 'firstname', 'image']
+                    }
+                    // amis
                 ]
             });
             res.status(200).json(friends);
@@ -98,12 +107,12 @@ module.exports = {
                 if (friendList[x].dataValues.friends.length == 0) user.push(friendList[x].dataValues)
                 else if (friendList[x].dataValues.friends[0].dataValues.userId != userId) {
                     user.push(friendList[x].dataValues)
-                } 
+                }
                 // else {
                 //     console.log(friendList[x].dataValues.friends[0].dataValues.userId," == ",friendList[x].dataValues.friends[0].dataValues.status)
-                    
+
                 // }
-                
+
             }
             console.log(user);
             res.status(200).json(user);
