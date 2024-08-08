@@ -32,8 +32,9 @@ const connectedUser = []
 
 io.on('connection', (socket) => {
   const senderId = socket.handshake.query.senderId
-
+  console.log('connect');
   socket.on('join', roomName => {
+    console.log("azertyuiop   ",roomName.receiverId);
     const receiverId = roomName.receiverId
     const room = senderId < receiverId ? senderId + '-room-' + receiverId : receiverId + '-room-' + senderId
 
@@ -52,11 +53,18 @@ io.on('connection', (socket) => {
 
           // createMessage(message.UserId, message.msg, message.room)
           console.log('Rotsyyyyyyyyyyyyyyy')
-          console.log("messagy == ",message)
+          console.log("message == ",message.message)
           console.log("id == ", id);
           socket.to(id).emit('receiveMessage', "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")// qui charge de la reenvoye du message 
         })
     })
+  })
+  socket.on('newPost',(data)=>{
+    console.log(data);
+    io.emit('notifyPost',"data")
+  })
+  socket.on('newFriend',(data)=>{
+    io.emit('notifyFriend',"data")
   })
   socket.on('leave',(id)=>{
     const index  = connectedUser.findIndex((user) => user.id == id )
