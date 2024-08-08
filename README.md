@@ -1,2 +1,2 @@
 # miniSocialNetworkBack
-A mini social network application using Node.js, Express, Mysql, Passport, and Socket.IO
+A mini social network backend using Node.js, Express, Mysql, and Socket.IO
